@@ -11,7 +11,7 @@ Unlike conventional methods, BEEF incorporates a dedicated trigger generator, wh
 To increase its stealthiness, BEEF crafts adversarial perturbations as triggers that provoke misclassification while leaving the model’s parameters entirely untouched.
 Furthermore, by calibrating a subset of low-salience parameters associated with backdoor activation, BEEF ensures stable performance and sustained effectiveness across FL rounds.
 Comprehensive evaluations across eight datasets, nine models (including four robust models tailored for adversarial examples), five state-of-the-art attacks (e.g., AutoAdapt, NDSS 2024), and eleven aggregation methods (e.g., FLAME, USENIX Security 2022; MESAS, CCS 2023; FreqFed, NDSS 2023) demonstrate BEEF's effectiveness in deceiving GNNs while maintaining minimal impact on normal data performance.
-For instance, in an FL system with 20\% compromised clients, BEEF achieves a 98.74\% attack success rate (ASR) and 82.63\% accuracy on the PubMed dataset using the FLAME aggregation method, significantly outperforming the best baseline, which achieves only 27.37\% ASR.  
+For instance, in an FL system with 20\% compromised clients, BEEF achieves a 98.74\% attack success rate (ASR) and 82.63\% accuracy on the PubMed dataset using the FLAME aggregation method, significantly outperforming the best baseline, which achieves only 27.37\% ASR.
 Additionally, we adapt BEEF to federated graph classification tasks, broadening its applicability and practicality.
 
 
@@ -110,4 +110,16 @@ cd GraphClassification
 
 ```bash
 python main.py --dataset=MUTAG --attack_method=BEEF --num_agents=10 --num_corrupt=2 --epochs=100 --trigger_size=5
+```
+
+
+### Citation
+
+```bibtex
+@article{yu2025wolf,
+    title   = {A Wolf in Sheep's Clothing: Unveiling a Stealthy Backdoor Attack in Subgraph Federated Learning},
+    author  = {Hao Yu and Wenjing Yang and Chuan Ma and Lingyuan Meng and Liang Du and Tao Xiang and Xinwang Liu and Kunlun He},
+    journal = {IEEE Transactions on Information Forensics and Security},
+    year    = {2026}
+}
 ```

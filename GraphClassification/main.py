@@ -45,7 +45,6 @@ def main():
     global_model = GCN(n_feat=num_feat, n_class=num_classes, n_hid=64, dropout=0.5).to(device)
 
     optimizer = optim.Adam(global_model.parameters(), lr=args.lr)
-    scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=50, gamma=0.1)
 
     generator = {}
     optimizer_G = {}
@@ -86,7 +85,6 @@ def main():
                 loss = F.cross_entropy(out, batch.y)
                 loss.backward()
                 optimizer.step()
-            scheduler.step()
 
             local_weights.append(deepcopy(global_model.state_dict()))
 

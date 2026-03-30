@@ -14,7 +14,7 @@ def load_dataset(dataset_name):
         T.ToUndirected(),
     ])
 
-    if dataset_name in ("PROTEINS", "ENZYMES", "MUTAG"):
+    if dataset_name in ("PROTEINS", "MUTAG"):
         dataset = TUDataset(root=r'data/', name=dataset_name, transform=trans)
     else:
         raise ValueError('Invalid dataset name.')

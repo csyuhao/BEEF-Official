@@ -68,7 +68,7 @@ class NodeSimilarityLayer(nn.Module):
 
 class GenModel(nn.Module):
 
-    def __init__(self, feat_dim, hid_dim, trigger_size, tau=0.1):
+    def __init__(self, feat_dim, hid_dim, trigger_size, dataset='MUTAG', tau=0.1):
         super(GenModel, self).__init__()
 
         self.feat_dim = feat_dim
@@ -81,6 +81,7 @@ class GenModel(nn.Module):
         adj_matrix = torch.triu(torch.ones(size=(trigger_size, trigger_size), dtype=torch.long), diagonal=1)
         self.trigger_edge_index = torch.nonzero(adj_matrix, as_tuple=False).t().contiguous()
         self.trigger_edge_attrs = torch.ones(size=(self.trigger_edge_index.shape[1],), dtype=torch.float)
+        self.embedding_layers = nn.Embedding(num_embeddings=feat_dim, embedding_dim=feat_dim, padding_idx=0)
 
         self.encoder_layers = nn.Sequential(*[
             geo_nn.GCNConv(in_channels=feat_dim, out_channels=int(self.trigger_size * hid_dim)),
@@ -155,12 +156,12 @@ class GenModel(nn.Module):
         return n_edge_index.long(), n_edge_attrs
 
     def forward(self, feat, edge_index):
-        feat = F.normalize(feat, p=2, dim=-1)
+        ori_feat = feat.clone()
         node_degree = degree(edge_index[0], num_nodes=feat.shape[0])
         min_node_degree = torch.min(node_degree)
         target_idx = torch.nonzero(node_degree == min_node_degree, as_tuple=False).reshape(-1)
 
-        attr_embedding = feat
+        attr_embedding = self.embedding_layers(torch.argmax(feat, dim=-1))
         for layer in self.encoder_layers:
             if isinstance(layer, geo_nn.GCNConv):
                 attr_embedding = layer(attr_embedding, edge_index)
@@ -173,7 +174,7 @@ class GenModel(nn.Module):
         edge_weights = self.edge_output_layer(attr_embedding)
         n_edge_index, n_edge_attrs = self.sample_edges(edge_weights, feat, target_idx)
 
-        n_feat = torch.cat([feat, n_feat], dim=0)
+        n_feat = torch.cat([ori_feat, n_feat], dim=0)
         n_edge_index = torch.cat([edge_index, n_edge_index], dim=1)
         n_edge_attrs = torch.cat([torch.ones(size=(edge_index.shape[1],), device=feat.device, dtype=torch.float), n_edge_attrs], dim=0)
 

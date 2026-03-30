@@ -160,9 +160,7 @@ cython_debug/
 .idea/
 __init__.py
 
+data/
 
-NodeClassificationTasks/data/*
-GraphClassificationTasks/data/*
-NodeClassificationTasks/selected_nodes/*
-preprocessed/*
-*.svg
+GraphClassification/data/
+NodeClassification/data/
